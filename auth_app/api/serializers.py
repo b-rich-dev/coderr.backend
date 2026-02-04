@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from auth_app.models import UserProfile
+from profiles_app.models import Profile
 
 class RegistrationSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
@@ -49,12 +49,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
             username=username,
             email=validated_data['email'],
             password=validated_data['password'],
-            # first_name=first_name,
-            # last_name=last_name
         )
 
         Token.objects.create(user=user)
-        UserProfile.objects.create(user=user, type=user_type)
+        Profile.objects.create(user=user, type=user_type)
         
         return user
     

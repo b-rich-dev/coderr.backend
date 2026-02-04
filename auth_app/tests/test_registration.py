@@ -1,8 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-# from auth_app.models import UserProfile
-# from auth_app.api.serializers import RegistrationSerializer
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
@@ -81,8 +79,8 @@ class RegistrationTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
-    def test_userprofile_created_customer(self):
-        """Prüft ob UserProfile mit Type 'customer' erstellt wurde"""
+    def test_profile_created_customer(self):
+        """Prüft ob Profile mit Type 'customer' erstellt wurde"""
         url = reverse('registration')
         data = {
             "username": "CustomerUser",
@@ -95,11 +93,11 @@ class RegistrationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
         user = User.objects.get(email="customer@test.com")
-        self.assertTrue(hasattr(user, 'userprofile'))
-        self.assertEqual(user.userprofile.type, 'customer')
+        self.assertTrue(hasattr(user, 'profile'))
+        self.assertEqual(user.profile.type, 'customer')
     
-    def test_userprofile_created_business(self):
-        """Prüft ob UserProfile mit Type 'business' erstellt wurde"""
+    def test_profile_created_business(self):
+        """Prüft ob Profile mit Type 'business' erstellt wurde"""
         url = reverse('registration')
         data = {
             "username": "BusinessUser",
@@ -112,8 +110,8 @@ class RegistrationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
         user = User.objects.get(email="business@test.com")
-        self.assertTrue(hasattr(user, 'userprofile'))
-        self.assertEqual(user.userprofile.type, 'business')
+        self.assertTrue(hasattr(user, 'profile'))
+        self.assertEqual(user.profile.type, 'business')
     
     def test_token_created_on_registration(self):
         """Prüft ob Token automatisch erstellt wird"""
