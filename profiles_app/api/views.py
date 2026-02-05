@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 
 from profiles_app.models import Profile
-from .serializers import ProfileSerializer, ProfileUpdateSerializer
+from .serializers import ProfileSerializer, ProfileUpdateSerializer, BusinessProfileSerializer, CustomerProfileSerializer
 from .permissions import IsOwnerOrReadOnly
     
 
@@ -36,7 +36,7 @@ class BusinessView(APIView):
     
     def get(self, request):
         business_profiles = Profile.objects.filter(type='business')
-        serializer = ProfileSerializer(business_profiles, many=True)
+        serializer = BusinessProfileSerializer(business_profiles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     
@@ -46,5 +46,5 @@ class CustomerView(APIView):
     
     def get(self, request):
         customer_profiles = Profile.objects.filter(type='customer')
-        serializer = ProfileSerializer(customer_profiles, many=True)
+        serializer = CustomerProfileSerializer(customer_profiles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
