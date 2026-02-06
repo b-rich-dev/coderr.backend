@@ -20,9 +20,7 @@ class OfferListTests(APITestCase):
             first_name="John",
             last_name="Doe"
         )
-        self.business_profile = Profile.objects.get(user=self.business_user)
-        self.business_profile.type = 'business'
-        self.business_profile.save()
+        self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         
         # Erstelle Test-Angebote
         self.offer1 = Offer.objects.create(
@@ -238,9 +236,7 @@ class OfferCreateTests(APITestCase):
             email="business@example.com",
             password="password123"
         )
-        self.business_profile = Profile.objects.get(user=self.business_user)
-        self.business_profile.type = 'business'
-        self.business_profile.save()
+        self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         self.business_token = Token.objects.create(user=self.business_user)
         
         # Customer User
@@ -249,9 +245,7 @@ class OfferCreateTests(APITestCase):
             email="customer@example.com",
             password="password123"
         )
-        self.customer_profile = Profile.objects.get(user=self.customer_user)
-        self.customer_profile.type = 'customer'
-        self.customer_profile.save()
+        self.customer_profile = Profile.objects.create(user=self.customer_user, type='customer')
         self.customer_token = Token.objects.create(user=self.customer_user)
         
         self.valid_offer_data = {
