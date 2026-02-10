@@ -47,17 +47,29 @@ class OrderCountView(APIView):
     
     def get(self, request, business_user_id):
         """Get count of in-progress orders for a business user"""
-        # Check if business user exists
+
         try:
             business_user = User.objects.get(id=business_user_id)
         except User.DoesNotExist:
-            raise NotFound("Kein Geschäftsnutzer mit der angegebenen ID gefunden.")
+            raise NotFound("No business user matching the specified ID was found.")
         
-        # Count in-progress orders where business__user__id matches
-        order_count = Orders.objects.filter(
-            business__user__id=business_user_id,
-            status='in_progress'
-        ).count()
+        order_count = Orders.objects.filter(business__user__id=business_user_id, status='in_progress').count()
         
         return Response({'order_count': order_count}, status=status.HTTP_200_OK)
  
+
+class CompletedOrderCountView(APIView):
+    """API view for getting the count of completed orders for a business user"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, business_user_id):
+        """Get count of completed orders for a business user"""
+        try:
+            business_user = User.objects.get(id=business_user_id)
+        except User.DoesNotExist:
+            raise NotFound("No business user matching the specified ID was found.")
+        
+        order_count = Orders.objects.filter(business__user__id=business_user_id, status='completed').count()
+        
+        return Response({'order_count': order_count}, status=status.HTTP_200_OK)
+    
