@@ -1,6 +1,9 @@
 from django.db import models
 
+
 class Offer(models.Model):
+    """Model representing a service offer created by a user."""
+    
     creator = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='offers')
     title = models.CharField(max_length=255)
     image = models.ImageField(upload_to='offer_images/', blank=True, null=True)
@@ -13,6 +16,8 @@ class Offer(models.Model):
 
 
 class OfferDetail(models.Model):
+    """Model representing specific details of an offer, such as pricing and delivery time."""
+    
     offer = models.ForeignKey(Offer, on_delete=models.CASCADE, related_name='offer_details')
     title = models.CharField(max_length=255)
     revisions = models.IntegerField(default=0)

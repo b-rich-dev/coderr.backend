@@ -1,11 +1,13 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
+from orders_app.models import Orders
 from profiles_app.models import Profile
 from offers_app.models import Offer, OfferDetail
-from orders_app.models import Orders
 
 
 class PatchOrderTests(APITestCase):
@@ -13,7 +15,7 @@ class PatchOrderTests(APITestCase):
     
     def setUp(self):
         """Create test data"""
-        # Customer User
+
         self.customer_user = User.objects.create_user(
             username="customer1",
             email="customer@example.com",
@@ -22,7 +24,6 @@ class PatchOrderTests(APITestCase):
         self.customer_profile = Profile.objects.create(user=self.customer_user, type='customer')
         self.customer_token = Token.objects.create(user=self.customer_user)
         
-        # Business User (owner of the order)
         self.business_user = User.objects.create_user(
             username="business1",
             email="business1@example.com",
@@ -31,7 +32,6 @@ class PatchOrderTests(APITestCase):
         self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         self.business_token = Token.objects.create(user=self.business_user)
         
-        # Another Business User (not involved in the order)
         self.business_user2 = User.objects.create_user(
             username="business2",
             email="business2@example.com",
@@ -39,8 +39,7 @@ class PatchOrderTests(APITestCase):
         )
         self.business_profile2 = Profile.objects.create(user=self.business_user2, type='business')
         self.business_token2 = Token.objects.create(user=self.business_user2)
-        
-        # Create Offer and OfferDetail
+
         self.offer = Offer.objects.create(
             creator=self.business_profile,
             title="Website Design",
@@ -56,7 +55,6 @@ class PatchOrderTests(APITestCase):
             offer_type="basic"
         )
         
-        # Create Order
         self.order = Orders.objects.create(
             offer_detail=self.offer_detail,
             customer=self.customer_profile,
@@ -72,12 +70,11 @@ class PatchOrderTests(APITestCase):
     
     def test_update_order_status_as_business(self):
         """Test: Business user can update order status"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -90,18 +87,16 @@ class PatchOrderTests(APITestCase):
         self.assertIn('updated_at', response.data)
         self.assertIn('created_at', response.data)
         
-        # Verify in database
         self.order.refresh_from_db()
         self.assertEqual(self.order.status, 'completed')
         
     def test_update_order_status_to_cancelled(self):
         """Test: Update status to cancelled"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'cancelled'
-        }
+        data = {'status': 'cancelled'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -110,12 +105,11 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_status_as_customer_forbidden(self):
         """Test: Customer cannot update order status"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -123,12 +117,11 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_status_as_different_business_forbidden(self):
         """Test: Business user not involved in order cannot update it"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token2.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -136,11 +129,10 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_status_unauthenticated(self):
         """Test: Unauthenticated request returns 401"""
+        
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -148,12 +140,11 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_not_found(self):
         """Test: Non-existent order returns 404"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('order-detail', kwargs={'pk': 99999})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -161,12 +152,11 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_invalid_status(self):
         """Test: Invalid status value returns 400"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'invalid_status'
-        }
+        data = {'status': 'invalid_status'}
         
         response = self.client.patch(url, data, format='json')
         
@@ -174,12 +164,11 @@ class PatchOrderTests(APITestCase):
         
     def test_update_order_response_contains_all_fields(self):
         """Test: Response contains all required fields"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('order-detail', kwargs={'pk': self.order.id})
         
-        data = {
-            'status': 'completed'
-        }
+        data = {'status': 'completed'}
         
         response = self.client.patch(url, data, format='json')
         

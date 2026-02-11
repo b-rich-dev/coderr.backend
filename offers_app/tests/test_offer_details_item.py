@@ -1,17 +1,20 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
 from profiles_app.models import Profile
 from offers_app.models import Offer, OfferDetail
 
 
 class GetOfferDetailTests(APITestCase):
+    """Test suite for retrieving offer details"""
     
     def setUp(self):
         """Create test data"""
-        # Business User 1
+
         self.business_user1 = User.objects.create_user(
             username="business1",
             email="business1@example.com",
@@ -22,7 +25,6 @@ class GetOfferDetailTests(APITestCase):
         self.business_profile1 = Profile.objects.create(user=self.business_user1, type='business')
         self.business_token1 = Token.objects.create(user=self.business_user1)
         
-        # Create test offer
         self.offer = Offer.objects.create(
             creator=self.business_profile1,
             title="Website Design",
@@ -58,12 +60,10 @@ class GetOfferDetailTests(APITestCase):
         
     def test_get_offer_detail_authenticated(self):
         """Test retrieving offer details as an authenticated user"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token1.key)
         url = reverse('offerdetail-detail', kwargs={'pk': self.detail1.id})
         response = self.client.get(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.detail1.id)
@@ -76,22 +76,18 @@ class GetOfferDetailTests(APITestCase):
         
     def test_get_offer_detail_unauthenticated(self):
         """Test retrieving offer details without authentication"""
+        
         url = reverse('offerdetail-detail', kwargs={'pk': self.detail1.id})
         response = self.client.get(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_get_offer_detail_not_found(self):
         """Test retrieving non-existent offer detail"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token1.key)
         url = reverse('offerdetail-detail', kwargs={'pk': 999})
         response = self.client.get(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         

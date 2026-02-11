@@ -1,18 +1,20 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
 from profiles_app.models import Profile
 from offers_app.models import Offer, OfferDetail
 
 
 class OfferListTests(APITestCase):
-    """Tests für GET /api/offers/"""
+    """Tests for GET /api/offers/"""
     
     def setUp(self):
-        """Erstellt Testdaten"""
-        # Business User
+        """Create test data"""
+
         self.business_user = User.objects.create_user(
             username="business1",
             email="business@example.com",
@@ -22,7 +24,6 @@ class OfferListTests(APITestCase):
         )
         self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         
-        # Erstelle Test-Angebote
         self.offer1 = Offer.objects.create(
             creator=self.business_profile,
             title="Website Design",
@@ -90,7 +91,8 @@ class OfferListTests(APITestCase):
         )
     
     def test_get_offers_list(self):
-        """Test: Abrufen der Angebotsliste"""
+        """Test: Retrieve offers list"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
@@ -100,7 +102,8 @@ class OfferListTests(APITestCase):
         self.assertEqual(len(response.data['results']), 2)
         
     def test_offer_contains_required_fields(self):
-        """Test: Angebot enthält alle erforderlichen Felder"""
+        """Test: Offer contains all required fields"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
@@ -117,7 +120,8 @@ class OfferListTests(APITestCase):
         self.assertIn('user_details', offer)
         
     def test_details_format_in_list(self):
-        """Test: Details haben das richtige Format (id und url)"""
+        """Test: Details have the correct format (id and url)"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
@@ -128,20 +132,20 @@ class OfferListTests(APITestCase):
         self.assertTrue(details[0]['url'].startswith('/offerdetails/'))
         
     def test_min_price_calculation(self):
-        """Test: min_price wird korrekt berechnet"""
+        """Test: min_price is calculated correctly"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
-        # Finde Website Design Angebot (min_price sollte 100 sein)
         offer = next(o for o in response.data['results'] if o['title'] == 'Website Design')
         self.assertEqual(float(offer['min_price']), 100.00)
         
-        # Finde Logo Design Angebot (min_price sollte 50 sein)
         offer = next(o for o in response.data['results'] if o['title'] == 'Logo Design')
         self.assertEqual(float(offer['min_price']), 50.00)
         
     def test_min_delivery_time_calculation(self):
-        """Test: min_delivery_time wird korrekt berechnet"""
+        """Test: min_delivery_time is calculated correctly"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
@@ -149,7 +153,8 @@ class OfferListTests(APITestCase):
         self.assertEqual(offer['min_delivery_time'], 5)
         
     def test_user_details_format(self):
-        """Test: user_details hat das richtige Format"""
+        """Test: user_details has the correct format"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url)
         
@@ -159,7 +164,8 @@ class OfferListTests(APITestCase):
         self.assertEqual(user_details['username'], 'business1')
         
     def test_filter_by_creator_id(self):
-        """Test: Filterung nach creator_id"""
+        """Test: Filter by creator_id"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'creator_id': self.business_user.id})
         
@@ -167,27 +173,28 @@ class OfferListTests(APITestCase):
         self.assertEqual(len(response.data['results']), 2)
         
     def test_filter_by_min_price(self):
-        """Test: Filterung nach min_price"""
+        """Test: Filter by min_price"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'min_price': 100})
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Website Design hat min_price 100, Logo Design hat 50
         self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['results'][0]['title'], 'Website Design')
         
     def test_filter_by_max_delivery_time(self):
-        """Test: Filterung nach max_delivery_time"""
+        """Test: Filter by max_delivery_time"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'max_delivery_time': 3})
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Logo Design hat min_delivery 3, Website Design hat 5
         self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['results'][0]['title'], 'Logo Design')
         
     def test_search_in_title(self):
-        """Test: Suche im Titel"""
+        """Test: Search in title"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'search': 'Website'})
         
@@ -196,7 +203,8 @@ class OfferListTests(APITestCase):
         self.assertEqual(response.data['results'][0]['title'], 'Website Design')
         
     def test_search_in_description(self):
-        """Test: Suche in der Beschreibung"""
+        """Test: Search in description"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'search': 'Creative'})
         
@@ -205,17 +213,18 @@ class OfferListTests(APITestCase):
         self.assertEqual(response.data['results'][0]['title'], 'Logo Design')
         
     def test_ordering_by_min_price(self):
-        """Test: Sortierung nach min_price"""
+        """Test: Ordering by min_price"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'ordering': 'min_price'})
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Logo Design (50) sollte vor Website Design (100) kommen
         self.assertEqual(response.data['results'][0]['title'], 'Logo Design')
         self.assertEqual(response.data['results'][1]['title'], 'Website Design')
         
     def test_pagination_page_size(self):
-        """Test: Paginierung mit page_size Parameter"""
+        """Test: Pagination with page_size parameter"""
+        
         url = reverse('offers-list-create')
         response = self.client.get(url, {'page_size': 1})
         
@@ -226,11 +235,11 @@ class OfferListTests(APITestCase):
 
 
 class OfferCreateTests(APITestCase):
-    """Tests für POST /api/offers/"""
+    """Tests for POST /api/offers/"""
     
     def setUp(self):
-        """Erstellt Testbenutzer"""
-        # Business User
+        """Creates test users"""
+
         self.business_user = User.objects.create_user(
             username="business1",
             email="business@example.com",
@@ -239,7 +248,6 @@ class OfferCreateTests(APITestCase):
         self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         self.business_token = Token.objects.create(user=self.business_user)
         
-        # Customer User
         self.customer_user = User.objects.create_user(
             username="customer1",
             email="customer@example.com",
@@ -281,7 +289,8 @@ class OfferCreateTests(APITestCase):
         }
     
     def test_create_offer_success(self):
-        """Test: Erfolgreiches Erstellen eines Angebots als Business User"""
+        """Test: Successful creation of an offer as a Business User"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('offers-list-create')
         response = self.client.post(url, self.valid_offer_data, format='json')
@@ -291,7 +300,6 @@ class OfferCreateTests(APITestCase):
         self.assertEqual(response.data['title'], 'Grafikdesign-Paket')
         self.assertEqual(len(response.data['details']), 3)
         
-        # Prüfe, dass Details IDs haben
         for detail in response.data['details']:
             self.assertIn('id', detail)
             self.assertIn('title', detail)
@@ -299,14 +307,16 @@ class OfferCreateTests(APITestCase):
             self.assertIn('features', detail)
     
     def test_create_offer_unauthenticated(self):
-        """Test: Erstellen ohne Authentifizierung gibt 401"""
+        """Test: Creating without authentication returns 401"""
+        
         url = reverse('offers-list-create')
         response = self.client.post(url, self.valid_offer_data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
     def test_create_offer_customer_user_forbidden(self):
-        """Test: Customer User darf keine Angebote erstellen (403)"""
+        """Test: Customer User is not allowed to create offers (403)"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('offers-list-create')
         response = self.client.post(url, self.valid_offer_data, format='json')
@@ -314,11 +324,12 @@ class OfferCreateTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_create_offer_less_than_3_details(self):
-        """Test: Angebot mit weniger als 3 Details gibt 400"""
+        """Test: Offer with less than 3 details returns 400"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         
         invalid_data = self.valid_offer_data.copy()
-        invalid_data['details'] = invalid_data['details'][:2]  # Nur 2 Details
+        invalid_data['details'] = invalid_data['details'][:2] 
         
         url = reverse('offers-list-create')
         response = self.client.post(url, invalid_data, format='json')
@@ -326,7 +337,8 @@ class OfferCreateTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_create_offer_more_than_3_details(self):
-        """Test: Angebot mit mehr als 3 Details gibt 400"""
+        """Test: Offer with more than 3 details returns 400"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         
         invalid_data = self.valid_offer_data.copy()
@@ -345,12 +357,13 @@ class OfferCreateTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_create_offer_missing_required_fields(self):
-        """Test: Fehlende Pflichtfelder geben 400"""
+        """Test: Missing required fields return 400"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         
         invalid_data = {
             "title": "Test",
-            # description fehlt
+            # description is missing
             "details": self.valid_offer_data['details']
         }
         
@@ -360,13 +373,13 @@ class OfferCreateTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_created_offer_has_correct_creator(self):
-        """Test: Erstelltes Angebot hat den richtigen Creator"""
+        """Test: Created offer has the correct creator"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('offers-list-create')
         response = self.client.post(url, self.valid_offer_data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
-        # Prüfe in der Datenbank
         offer = Offer.objects.get(id=response.data['id'])
         self.assertEqual(offer.creator, self.business_profile)

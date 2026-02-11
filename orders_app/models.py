@@ -1,6 +1,9 @@
 from django.db import models
 
+
 class Orders(models.Model):
+    """Model representing an order placed by a customer for a specific offer detail."""
+    
     offer_detail = models.ForeignKey('offers_app.OfferDetail', on_delete=models.PROTECT, related_name='orders')
     customer = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='customer_orders')
     business = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='business_orders')
@@ -16,7 +19,6 @@ class Orders(models.Model):
     features = models.JSONField(default=list)
     offer_type = models.CharField(max_length=20, choices=[('basic', 'Basic'), ('standard', 'Standard'), ('premium', 'Premium')], default='standard')
     
-
     def __str__(self):
         return f"Order {self.id} for {self.title} by {self.customer.user.username}"
     

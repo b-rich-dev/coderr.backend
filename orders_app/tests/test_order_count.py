@@ -1,11 +1,13 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
+from orders_app.models import Orders
 from profiles_app.models import Profile
 from offers_app.models import Offer, OfferDetail
-from orders_app.models import Orders
 
 
 class OrderCountTests(APITestCase):
@@ -104,6 +106,7 @@ class OrderCountTests(APITestCase):
     
     def test_get_order_count_for_business(self):
         """Test: Get order count for business user with in_progress orders"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('order-count', kwargs={'business_user_id': self.business_user1.id})
         response = self.client.get(url)
@@ -114,6 +117,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_no_orders(self):
         """Test: Get order count for business user with no orders"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('order-count', kwargs={'business_user_id': self.business_user2.id})
         response = self.client.get(url)
@@ -123,6 +127,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_only_counts_in_progress(self):
         """Test: Order count only includes in_progress status"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token1.key)
         url = reverse('order-count', kwargs={'business_user_id': self.business_user1.id})
         response = self.client.get(url)
@@ -131,6 +136,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_unauthenticated(self):
         """Test: Unauthenticated request returns 401"""
+        
         url = reverse('order-count', kwargs={'business_user_id': self.business_user1.id})
         response = self.client.get(url)
         
@@ -138,6 +144,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_user_not_found(self):
         """Test: Non-existent user returns 404"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('order-count', kwargs={'business_user_id': 99999})
         response = self.client.get(url)
@@ -147,6 +154,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_as_business_user(self):
         """Test: Business user can check their own order count"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token1.key)
         url = reverse('order-count', kwargs={'business_user_id': self.business_user1.id})
         response = self.client.get(url)
@@ -156,6 +164,7 @@ class OrderCountTests(APITestCase):
         
     def test_get_order_count_response_format(self):
         """Test: Response has correct format"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('order-count', kwargs={'business_user_id': self.business_user1.id})
         response = self.client.get(url)

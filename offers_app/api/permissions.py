@@ -2,9 +2,7 @@ from rest_framework import permissions
 
 
 class IsBusinessUser(permissions.BasePermission):
-    """
-    Permission that only allows business users to create offers.
-    """
+    """Permission that only allows business users to create offers."""
     
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:

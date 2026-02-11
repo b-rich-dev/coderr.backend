@@ -1,15 +1,16 @@
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
 
 from profiles_app.models import Profile
-from .serializers import ProfileSerializer, ProfileUpdateSerializer, BusinessProfileSerializer, CustomerProfileSerializer
 from .permissions import IsOwnerOrReadOnly
+from .serializers import ProfileSerializer, ProfileUpdateSerializer, BusinessProfileSerializer, CustomerProfileSerializer
     
 
 class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """API view for retrieving, updating, or deleting a single profile"""
+    
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
@@ -31,7 +32,8 @@ class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     
 class BusinessView(APIView):
-    """API view für alle Business Profile"""
+    """API view for all Business Profiles"""
+    
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
@@ -42,9 +44,11 @@ class BusinessView(APIView):
     
 class CustomerView(APIView):
     """API view für alle Customer Profile"""
+    
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
         customer_profiles = Profile.objects.filter(type='customer')
         serializer = CustomerProfileSerializer(customer_profiles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    

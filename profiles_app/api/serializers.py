@@ -1,11 +1,10 @@
-from django.contrib.auth.models import User
-
 from rest_framework import serializers
-
 from profiles_app.models import Profile
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    """Serializer for Profile model with nested user information"""
+    
     username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
@@ -32,6 +31,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for updating Profile model with nested user information"""
 
     first_name = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
@@ -51,6 +51,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         ]
     
     def update(self, instance, validated_data):
+        """Update Profile instance with nested user information"""
         
         first_name = validated_data.pop('first_name', None)
         last_name = validated_data.pop('last_name', None)
@@ -70,6 +71,8 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
+    """Serializer for business Profile model with nested user information"""
+    
     username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
@@ -93,6 +96,8 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
+    """Serializer for customer Profile model with nested user information"""
+    
     username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)

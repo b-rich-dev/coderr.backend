@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from offers_app.models import Offer, OfferDetail
-from django.contrib.auth.models import User
 
 
 class OfferPriceDeliveryMixin:
@@ -8,6 +7,7 @@ class OfferPriceDeliveryMixin:
     
     def get_min_price(self, obj):
         """Calculate the minimum price from offer details"""
+        
         details = obj.offer_details.all()
         if details:
             return min(detail.price for detail in details)
@@ -15,6 +15,7 @@ class OfferPriceDeliveryMixin:
     
     def get_min_delivery_time(self, obj):
         """Calculate the minimum delivery time from offer details"""
+        
         details = obj.offer_details.all()
         if details:
             return min(detail.delivery_time_in_days for detail in details)
@@ -22,6 +23,8 @@ class OfferPriceDeliveryMixin:
     
         
 class OfferDetailSerializer(serializers.ModelSerializer):
+    """Serializer for OfferDetail model"""
+    
     class Meta:
         model = OfferDetail
         fields = ['id', 'title', 'revisions', 'delivery_time_in_days', 'price', 'features', 'offer_type']
@@ -30,6 +33,7 @@ class OfferDetailSerializer(serializers.ModelSerializer):
 
 class OfferDetailListSerializer(serializers.ModelSerializer):
     """Serializer for OfferDetail in GET list (id and url only)"""
+    
     url = serializers.SerializerMethodField()
     
     class Meta:
@@ -41,6 +45,8 @@ class OfferDetailListSerializer(serializers.ModelSerializer):
 
 
 class OfferDetailViewSerializer(OfferPriceDeliveryMixin, serializers.ModelSerializer):
+    """Serializer for GET detail view of an offer with nested details"""
+    
     user = serializers.IntegerField(source='creator.user.id', read_only=True)
     details = OfferDetailListSerializer(source='offer_details', many=True, read_only=True)
     min_price = serializers.SerializerMethodField()
@@ -52,10 +58,10 @@ class OfferDetailViewSerializer(OfferPriceDeliveryMixin, serializers.ModelSerial
         fields = ['id', 'user', 'title', 'image', 'description', 'created_at', 'updated_at', 'details', 'min_price', 'min_delivery_time']
         read_only_fields = ['id']
         
-        
-        
+            
 class OfferDetailViewUpdateSerializer(serializers.ModelSerializer):
     """Serializer for PATCH/PUT operations on offers with nested detail updates"""
+    
     details = OfferDetailSerializer(source='offer_details', many=True, required=False)
     
     class Meta:
@@ -65,19 +71,17 @@ class OfferDetailViewUpdateSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         """Update offer and its associated details"""
+        
         details_data = validated_data.pop('offer_details', None)
         
-        # Update offer fields dynamically
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
         
-        # Update details if provided
         if details_data:
             for detail_data in details_data:
                 offer_type = detail_data.get('offer_type')
                 if offer_type:
-                    # Find and update detail by offer_type
                     try:
                         detail = OfferDetail.objects.get(offer=instance, offer_type=offer_type)
                         for field, value in detail_data.items():
@@ -90,6 +94,7 @@ class OfferDetailViewUpdateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """Use full OfferDetailSerializer for response"""
+        
         representation = {
             'id': instance.id,
             'title': instance.title,
@@ -102,6 +107,7 @@ class OfferDetailViewUpdateSerializer(serializers.ModelSerializer):
 
 class UserDetailsSerializer(serializers.Serializer):
     """Serializer for user details in offer list"""
+    
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     username = serializers.CharField()
@@ -109,6 +115,7 @@ class UserDetailsSerializer(serializers.Serializer):
 
 class OfferListSerializer(OfferPriceDeliveryMixin, serializers.ModelSerializer):
     """Serializer for GET list of offers"""
+    
     user = serializers.IntegerField(source='creator.user.id', read_only=True)
     details = OfferDetailListSerializer(source='offer_details', many=True, read_only=True)
     min_price = serializers.SerializerMethodField()
@@ -134,6 +141,7 @@ class OfferListSerializer(OfferPriceDeliveryMixin, serializers.ModelSerializer):
     
     def get_user_details(self, obj):
         """Return user details for the offer creator"""
+        
         user = obj.creator.user
         return {
             'first_name': user.first_name,
@@ -144,6 +152,7 @@ class OfferListSerializer(OfferPriceDeliveryMixin, serializers.ModelSerializer):
 
 class OfferCreateSerializer(serializers.ModelSerializer):
     """Serializer for POST to create a new offer"""
+    
     details = OfferDetailSerializer(source='offer_details', many=True)
     
     class Meta:
@@ -153,12 +162,14 @@ class OfferCreateSerializer(serializers.ModelSerializer):
     
     def validate_details(self, value):
         """Validate that exactly 3 details are provided"""
+        
         if len(value) != 3:
             raise serializers.ValidationError("An offer must contain exactly 3 details.")
         return value
     
     def create(self, validated_data):
         """Create an offer with associated details"""
+        
         details_data = validated_data.pop('offer_details')
         offer = Offer.objects.create(**validated_data)
         
@@ -169,6 +180,7 @@ class OfferCreateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """Use OfferDetailSerializer for response representation"""
+        
         representation = super().to_representation(instance)
         representation['details'] = OfferDetailSerializer(instance.offer_details.all(), many=True).data
         return representation

@@ -1,13 +1,17 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
 
 class RegistrationTests(APITestCase):
+    """Test suite for user registration endpoint."""
         
     def test_register_user(self):
+        """Tests successful user registration with valid data."""
+        
         url = reverse('registration')
         data = {
             "username": "John_Doe",
@@ -18,9 +22,6 @@ class RegistrationTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('token', response.data)
         self.assertEqual(response.data['username'], "John_Doe")
@@ -28,12 +29,12 @@ class RegistrationTests(APITestCase):
         self.assertIn('user_id', response.data)
     
     def test_register_duplicate_email(self):
-        """Email bereits registriert"""
+        """Tests registration attempt with duplicate email address."""
+        
         url = reverse('registration')
-        # Ersten User erstellen
+
         User.objects.create_user(username='existing', email='test@test.com', password='pass123')
         
-        # Zweiten mit gleicher Email versuchen
         data = {
             "username": "NewUser",
             "email": "test@test.com",
@@ -46,7 +47,8 @@ class RegistrationTests(APITestCase):
         self.assertIn('email', response.data)
     
     def test_register_password_mismatch(self):
-        """Passwörter stimmen nicht überein"""
+        """Tests registration with mismatched passwords."""
+        
         url = reverse('registration')
         data = {
             "username": "TestUser",
@@ -60,14 +62,16 @@ class RegistrationTests(APITestCase):
         self.assertIn('password', response.data)
     
     def test_register_missing_fields(self):
-        """Pflichtfelder fehlen"""
+        """Tests registration with missing required fields."""
+        
         url = reverse('registration')
-        data = {"email": "test@test.com"}  # username und password fehlen
+        data = {"email": "test@test.com"}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_register_invalid_type(self):
-        """Ungültiger User Type"""
+        """Tests registration with invalid user type."""
+        
         url = reverse('registration')
         data = {
             "username": "TestUser",
@@ -80,7 +84,8 @@ class RegistrationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_profile_created_customer(self):
-        """Prüft ob Profile mit Type 'customer' erstellt wurde"""
+        """Tests that a profile with type 'customer' is created."""
+        
         url = reverse('registration')
         data = {
             "username": "CustomerUser",
@@ -97,7 +102,8 @@ class RegistrationTests(APITestCase):
         self.assertEqual(user.profile.type, 'customer')
     
     def test_profile_created_business(self):
-        """Prüft ob Profile mit Type 'business' erstellt wurde"""
+        """Tests that a profile with type 'business' is created."""
+        
         url = reverse('registration')
         data = {
             "username": "BusinessUser",
@@ -114,7 +120,8 @@ class RegistrationTests(APITestCase):
         self.assertEqual(user.profile.type, 'business')
     
     def test_token_created_on_registration(self):
-        """Prüft ob Token automatisch erstellt wird"""
+        """Tests that an authentication token is automatically created."""
+        
         url = reverse('registration')
         data = {
             "username": "TokenUser",

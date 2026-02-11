@@ -1,8 +1,11 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+
 from decimal import Decimal
 
 class Reviews(models.Model):
+    """Model representing a review submitted by a reviewer for a business profile."""
+    
     business = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='business_reviews')
     reviewer = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='reviews')
     rating = models.DecimalField(
@@ -17,6 +20,7 @@ class Reviews(models.Model):
 
     class Meta:
         """A reviewer can only submit one review per business."""
+        
         unique_together = [['business', 'reviewer']]
 
     def __str__(self):

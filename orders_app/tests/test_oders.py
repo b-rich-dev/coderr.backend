@@ -1,11 +1,13 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
+from orders_app.models import Orders
 from profiles_app.models import Profile
 from offers_app.models import Offer, OfferDetail
-from orders_app.models import Orders
 
 
 class GetOrdersTests(APITestCase):
@@ -13,7 +15,7 @@ class GetOrdersTests(APITestCase):
     
     def setUp(self):
         """Create test data"""
-        # Customer User
+
         self.customer_user = User.objects.create_user(
             username="customer1",
             email="customer@example.com",
@@ -22,7 +24,6 @@ class GetOrdersTests(APITestCase):
         self.customer_profile = Profile.objects.create(user=self.customer_user, type='customer')
         self.customer_token = Token.objects.create(user=self.customer_user)
         
-        # Business User 1
         self.business_user1 = User.objects.create_user(
             username="business1",
             email="business1@example.com",
@@ -31,7 +32,6 @@ class GetOrdersTests(APITestCase):
         self.business_profile1 = Profile.objects.create(user=self.business_user1, type='business')
         self.business_token1 = Token.objects.create(user=self.business_user1)
         
-        # Business User 2 (not involved in any order)
         self.business_user2 = User.objects.create_user(
             username="business2",
             email="business2@example.com",
@@ -40,7 +40,6 @@ class GetOrdersTests(APITestCase):
         self.business_profile2 = Profile.objects.create(user=self.business_user2, type='business')
         self.business_token2 = Token.objects.create(user=self.business_user2)
         
-        # Create Offer and OfferDetail
         self.offer = Offer.objects.create(
             creator=self.business_profile1,
             title="Website Design",
@@ -56,7 +55,6 @@ class GetOrdersTests(APITestCase):
             offer_type="basic"
         )
         
-        # Create Orders
         self.order1 = Orders.objects.create(
             offer_detail=self.offer_detail,
             customer=self.customer_profile,
@@ -84,6 +82,7 @@ class GetOrdersTests(APITestCase):
     
     def test_get_orders_as_customer(self):
         """Test: Customer can see their orders"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         response = self.client.get(url)
@@ -93,6 +92,7 @@ class GetOrdersTests(APITestCase):
         
     def test_get_orders_as_business(self):
         """Test: Business user can see orders where they are the provider"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token1.key)
         url = reverse('orders-list-create')
         response = self.client.get(url)
@@ -102,6 +102,7 @@ class GetOrdersTests(APITestCase):
         
     def test_get_orders_only_own_orders(self):
         """Test: Users only see their own orders"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token2.key)
         url = reverse('orders-list-create')
         response = self.client.get(url)
@@ -111,6 +112,7 @@ class GetOrdersTests(APITestCase):
         
     def test_get_orders_contains_required_fields(self):
         """Test: Order contains all required fields"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         response = self.client.get(url)
@@ -131,6 +133,7 @@ class GetOrdersTests(APITestCase):
         
     def test_get_orders_unauthenticated(self):
         """Test: Unauthenticated request returns 401"""
+        
         url = reverse('orders-list-create')
         response = self.client.get(url)
         
@@ -142,7 +145,7 @@ class PostOrdersTests(APITestCase):
     
     def setUp(self):
         """Create test data"""
-        # Customer User
+
         self.customer_user = User.objects.create_user(
             username="customer1",
             email="customer@example.com",
@@ -151,7 +154,6 @@ class PostOrdersTests(APITestCase):
         self.customer_profile = Profile.objects.create(user=self.customer_user, type='customer')
         self.customer_token = Token.objects.create(user=self.customer_user)
         
-        # Business User
         self.business_user = User.objects.create_user(
             username="business1",
             email="business1@example.com",
@@ -160,7 +162,6 @@ class PostOrdersTests(APITestCase):
         self.business_profile = Profile.objects.create(user=self.business_user, type='business')
         self.business_token = Token.objects.create(user=self.business_user)
         
-        # Create Offer and OfferDetail
         self.offer = Offer.objects.create(
             creator=self.business_profile,
             title="Website Design",
@@ -178,12 +179,11 @@ class PostOrdersTests(APITestCase):
     
     def test_create_order_as_customer(self):
         """Test: Customer can create an order"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         
-        data = {
-            'offer_detail_id': self.offer_detail.id
-        }
+        data = {'offer_detail_id': self.offer_detail.id}
         
         response = self.client.post(url, data, format='json')
         
@@ -200,16 +200,14 @@ class PostOrdersTests(APITestCase):
         
     def test_create_order_snapshot_data(self):
         """Test: Order contains snapshot of offer detail data"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         
-        data = {
-            'offer_detail_id': self.offer_detail.id
-        }
+        data = {'offer_detail_id': self.offer_detail.id}
         
         response = self.client.post(url, data, format='json')
         
-        # Verify order was created in database
         order = Orders.objects.get(id=response.data['id'])
         self.assertEqual(order.title, 'Basic Package')
         self.assertEqual(order.revisions, 3)
@@ -220,12 +218,11 @@ class PostOrdersTests(APITestCase):
         
     def test_create_order_as_business_forbidden(self):
         """Test: Business user cannot create orders"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token.key)
         url = reverse('orders-list-create')
         
-        data = {
-            'offer_detail_id': self.offer_detail.id
-        }
+        data = {'offer_detail_id': self.offer_detail.id}
         
         response = self.client.post(url, data, format='json')
         
@@ -233,11 +230,10 @@ class PostOrdersTests(APITestCase):
         
     def test_create_order_unauthenticated(self):
         """Test: Unauthenticated request returns 401"""
+        
         url = reverse('orders-list-create')
         
-        data = {
-            'offer_detail_id': self.offer_detail.id
-        }
+        data = {'offer_detail_id': self.offer_detail.id}
         
         response = self.client.post(url, data, format='json')
         
@@ -245,12 +241,11 @@ class PostOrdersTests(APITestCase):
         
     def test_create_order_invalid_offer_detail_id(self):
         """Test: Invalid offer detail ID returns 404"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         
-        data = {
-            'offer_detail_id': 99999
-        }
+        data = {'offer_detail_id': 99999}
         
         response = self.client.post(url, data, format='json')
         
@@ -258,6 +253,7 @@ class PostOrdersTests(APITestCase):
         
     def test_create_order_missing_offer_detail_id(self):
         """Test: Missing offer detail ID returns 400"""
+        
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         url = reverse('orders-list-create')
         

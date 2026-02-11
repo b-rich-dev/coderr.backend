@@ -1,16 +1,20 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
 from profiles_app.models import Profile
 from reviews_app.models import Reviews
 
 
 class ReviewDetailTests(APITestCase):
+    """Tests for GET, PUT, PATCH, DELETE /api/reviews/{id}/ endpoint to manage review details"""
         
     def setUp(self):
         """Create test data"""
+        
         self.customer_user = User.objects.create_user(
             username="customer1",
             email="customer@example.com",
@@ -44,12 +48,10 @@ class ReviewDetailTests(APITestCase):
         
     def test_get_review_detail(self):
         """Test retrieving a review detail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         response = self.client.get(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         review_data = response.data
@@ -60,6 +62,7 @@ class ReviewDetailTests(APITestCase):
         
     def test_update_review_detail(self):
         """Test updating a review detail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         update_data = {
@@ -67,9 +70,6 @@ class ReviewDetailTests(APITestCase):
             'description': "Excellent service!"
         }
         response = self.client.put(url, update_data, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         review_data = response.data
@@ -78,6 +78,7 @@ class ReviewDetailTests(APITestCase):
         
     def test_update_review_unauthorized(self):
         """Test updating a review detail without authorization should fail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         update_data = {
             'rating': 5,
@@ -85,24 +86,20 @@ class ReviewDetailTests(APITestCase):
         }
         response = self.client.put(url, update_data, format='json')
         
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_review_not_found(self):
         """Test retrieving a non-existent review should return 404"""
+        
         url = reverse('review-detail', kwargs={'pk': 999})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         response = self.client.get(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_review_forbitten(self):
         """Test updating a review by a user who is not the reviewer should fail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token2.key)
         update_data = {
@@ -111,13 +108,11 @@ class ReviewDetailTests(APITestCase):
         }
         response = self.client.put(url, update_data, format='json')
         
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         
     def test_review_wrong_data(self):
         """Test updating a review with wrong data should return 400"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         update_data = {
@@ -126,13 +121,11 @@ class ReviewDetailTests(APITestCase):
         }
         response = self.client.put(url, update_data, format='json')
         
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     def test_review_partial_update(self):
         """Test partially updating a review detail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         update_data = {
@@ -140,55 +133,44 @@ class ReviewDetailTests(APITestCase):
         }
         response = self.client.patch(url, update_data, format='json')
         
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         review_data = response.data
-        self.assertEqual(review_data['rating'], '4.0')  # Rating should remain unchanged
+        self.assertEqual(review_data['rating'], '4.0')
         self.assertEqual(review_data['description'], "Updated description only")
      
     def test_delete_review_detail(self):
         """Test deleting a review detail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         response = self.client.delete(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Reviews.objects.filter(id=self.review.id).exists())
         
     def test_delete_review_unauthorized(self):
         """Test deleting a review detail without authorization should fail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         response = self.client.delete(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_delete_review_forbidden(self):
         """Test deleting a review by a user who is not the reviewer should fail"""
+        
         url = reverse('review-detail', kwargs={'pk': self.review.id})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.business_token2.key)
         response = self.client.delete(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         
     def test_delete_review_not_found(self):
         """Test deleting a non-existent review should return 404"""
+        
         url = reverse('review-detail', kwargs={'pk': 999})
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.customer_token.key)
         response = self.client.delete(url, format='json')
-        
-        print(f"\n📩 Response Status: {response.status_code}")
-        print(f"📦 Response Data: {response.data}\n")
         
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         

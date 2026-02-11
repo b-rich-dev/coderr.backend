@@ -1,22 +1,27 @@
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
 from profiles_app.models import Profile
 
 
 class PatchProfileTests(APITestCase):
+    """Tests for PATCH /api/profiles/{id}/ endpoint to update user profiles"""
     
     def setUp(self):
-        """Erstellt Testbenutzer und Profile für PATCH-Tests"""
+        """Set up a test user and profile, and authenticate the client with a token"""
+        
         self.test_user = User.objects.create_user(username="patchuser", email="patch@example.com", password="testpass")
         self.profile = Profile.objects.create(user=self.test_user, type="customer")
         self.token = Token.objects.create(user=self.test_user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         
     def test_patch_own_profile_full(self):
-        """Patcht eigenes Profil mit allen Feldern"""
+        """Patch own profile with all fields"""
+        
         url = reverse('profile-detail', args=[self.profile.id])
         data = {
             "first_name": "John",
@@ -29,9 +34,6 @@ class PatchProfileTests(APITestCase):
         }
         response = self.client.patch(url, data, format='json')
         
-        print(f"\n📩 PATCH Response Status: {response.status_code}")
-        print(f"📦 PATCH Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['first_name'], "John")
         self.assertEqual(response.data['last_name'], "Doe")
@@ -41,27 +43,25 @@ class PatchProfileTests(APITestCase):
         self.assertEqual(response.data['working_hours'], "9-17")
         self.assertEqual(response.data['email'], "john.doe@example.com")
         
-        # Prüfe dass User-Felder auch im User-Model aktualisiert wurden
         self.test_user.refresh_from_db()
         self.assertEqual(self.test_user.first_name, "John")
         self.assertEqual(self.test_user.last_name, "Doe")
         self.assertEqual(self.test_user.email, "john.doe@example.com")
     
     def test_patch_own_profile_partial(self):
-        """Patcht nur einzelne Felder des eigenen Profils"""
+        """Patch only individual fields of own profile"""
+        
         url = reverse('profile-detail', args=[self.profile.id])
-        data = {
-            "location": "München"
-        }
+        data = {"location": "München"}
         response = self.client.patch(url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['location'], "München")
-        # Andere Felder bleiben unverändert
         self.assertEqual(response.data['username'], "patchuser")
     
     def test_patch_other_user_profile(self):
-        """Versucht, fremdes Profil zu patchen - sollte verboten sein"""
+        """Attempt to patch another user's profile - should be forbidden"""
+        
         other_user = User.objects.create_user(username="otheruser", email="other@example.com", password="otherpass")
         other_profile = Profile.objects.create(user=other_user, type="customer")
         
@@ -69,14 +69,12 @@ class PatchProfileTests(APITestCase):
         data = {"location": "Hamburg"}
         response = self.client.patch(url, data, format='json')
         
-        print(f"\n📩 PATCH Other User Response Status: {response.status_code}")
-        print(f"📦 PATCH Other User Response Data: {response.data}\n")
-        
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_patch_profile_unauthenticated(self):
-        """Versucht, Profil ohne Authentifizierung zu patchen"""
-        self.client.credentials()  # Entfernt Token
+        """Attempt to patch profile without authentication"""
+        
+        self.client.credentials()
         url = reverse('profile-detail', args=[self.profile.id])
         data = {"location": "Frankfurt"}
         response = self.client.patch(url, data, format='json')
@@ -84,17 +82,18 @@ class PatchProfileTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
     def test_patch_profile_read_only_fields(self):
-        """Versucht, read-only Felder zu ändern - sollten ignoriert werden"""
+        """Attempt to change read-only fields - should be ignored"""
+        
         url = reverse('profile-detail', args=[self.profile.id])
         data = {
-            "type": "business",  # read-only
-            "username": "newusername",  # read-only
-            "location": "Köln"  # erlaubt
+            "type": "business",
+            "username": "newusername",
+            "location": "Köln"
         }
         response = self.client.patch(url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['location'], "Köln")  # wurde geändert
-        self.assertEqual(response.data['type'], "customer")  # blieb customer
-        self.assertEqual(response.data['username'], "patchuser")  # blieb gleich
+        self.assertEqual(response.data['location'], "Köln") 
+        self.assertEqual(response.data['type'], "customer") 
+        self.assertEqual(response.data['username'], "patchuser") 
         

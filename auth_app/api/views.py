@@ -1,20 +1,17 @@
 from django.contrib.auth import authenticate
 
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .serializers import RegistrationSerializer
 
 
 class RegisterView(APIView):
-    """
-    API view for user registration.   
-    Allows any user to register a new account by providing fullname, email, and password.
-    Automatically creates an authentication token for the new user.
-    """
+    """API view for user registration."""
+    
     permission_classes = [AllowAny]
     
     def post(self, request):
@@ -23,7 +20,6 @@ class RegisterView(APIView):
             user = serializer.save()
             return Response({
                 "token": user.auth_token.key,
-                #"username": f"{user.first_name} {user.last_name}".strip(),
                 "username": user.username,
                 "email": user.email,
                 "user_id": user.id
@@ -32,11 +28,8 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
-    """
-    API view for user authentication.   
-    Authenticates users with email and password (email is used as username).
-    Returns or creates an authentication token upon successful login.
-    """
+    """API view for user authentication."""
+    
     permission_classes = [AllowAny]
     
     def post(self, request):
@@ -52,7 +45,6 @@ class LoginView(APIView):
             token, created = Token.objects.get_or_create(user=user)
             return Response({
                 "token": token.key,
-                #"username": f"{user.first_name} {user.last_name}".strip(),
                 "username": user.username,
                 "email": user.email,
                 "user_id": user.id
@@ -62,10 +54,8 @@ class LoginView(APIView):
     
 
 class LogoutView(APIView):
-    """
-    API view for user logout.    
-    Requires authentication. Deletes the user's authentication token to log them out.
-    """
+    """API view for user logout."""
+    
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
+
 from orders_app.models import Orders
 from offers_app.models import OfferDetail
 
@@ -30,6 +31,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     """Serializer for creating orders with snapshot from OfferDetail"""
+    
     offer_detail_id = serializers.IntegerField(write_only=True)
     
     class Meta:
@@ -38,6 +40,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     
     def validate_offer_detail_id(self, value):
         """Validate that the offer detail exists"""
+        
         try:
             OfferDetail.objects.get(id=value)
         except OfferDetail.DoesNotExist:
@@ -46,10 +49,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         """Create order with snapshot of offer detail data"""
+        
         offer_detail_id = validated_data.pop('offer_detail_id')
         offer_detail = OfferDetail.objects.select_related('offer__creator').get(id=offer_detail_id)
         
-        # Create order with snapshot data
         order = Orders.objects.create(
             offer_detail=offer_detail,
             customer=self.context['request'].user.profile,
@@ -65,6 +68,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """Return full order data after creation without updated_at"""
+        
+        
         data = OrderListSerializer(instance).data
         data.pop('updated_at', None)
         return data
@@ -79,5 +84,6 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         """Return full order data after update"""
+        
         return OrderListSerializer(instance).data
     

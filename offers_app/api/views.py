@@ -1,10 +1,8 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 from offers_app.models import Offer, OfferDetail
@@ -15,12 +13,14 @@ from .filters import OfferFilter
 
 class OfferPagination(PageNumberPagination):
     """Pagination for offers"""
+    
     page_size = 6
     page_size_query_param = 'page_size'
-    #max_page_size = 100
 
 
 class OffersListCreateView(generics.ListCreateAPIView):
+    """API view for listing and creating offers"""
+    
     queryset = Offer.objects.all().prefetch_related('offer_details', 'creator__user')
     permission_classes = [IsBusinessUser]
     pagination_class = OfferPagination
@@ -36,10 +36,12 @@ class OffersListCreateView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         """Set the current user's profile as creator"""
+        
         serializer.save(creator=self.request.user.profile)
     
     def create(self, request, *args, **kwargs):
         """Override create to return custom status code 201"""
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -48,6 +50,8 @@ class OffersListCreateView(generics.ListCreateAPIView):
     
 
 class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """API view for retrieving, updating, and deleting a single offer"""
+    
     queryset = Offer.objects.all().prefetch_related('offer_details', 'creator__user')
     serializer_class = OfferDetailViewSerializer
     permission_classes = [IsOfferOwnerOrReadOnly]
@@ -60,6 +64,7 @@ class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 class OfferDetailItemView(generics.RetrieveAPIView):
     """API view for retrieving a single OfferDetail"""
+    
     queryset = OfferDetail.objects.all()
     serializer_class = OfferDetailSerializer
     permission_classes = [IsAuthenticated]    
