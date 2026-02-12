@@ -127,12 +127,15 @@ coderr.backend/
    ```
 
 2. **Create and activate virtual environment**
+
+   **Windows:**
    ```bash
-   # Windows
    python -m venv env
    env\Scripts\activate
+   ```
 
-   # Linux/Mac
+   **Linux/Mac:**
+   ```bash
    python3 -m venv env
    source env/bin/activate
    ```
