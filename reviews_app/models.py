@@ -1,18 +1,13 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-from decimal import Decimal
 
 class Reviews(models.Model):
     """Model representing a review submitted by a reviewer for a business profile."""
     
     business = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='business_reviews')
     reviewer = models.ForeignKey('profiles_app.Profile', on_delete=models.CASCADE, related_name='reviews')
-    rating = models.DecimalField(
-        max_digits=2, 
-        decimal_places=1, 
-        validators=[MinValueValidator(Decimal('1.0')), MaxValueValidator(Decimal('5.0'))]
-    )
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     description = models.TextField(max_length=500, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)

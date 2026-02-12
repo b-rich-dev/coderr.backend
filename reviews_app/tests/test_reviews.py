@@ -58,7 +58,7 @@ class ReviewsTests(APITestCase):
         review_data = response.data[0]
         self.assertEqual(review_data['business_user'], self.business_user1.id)
         self.assertEqual(review_data['reviewer'], self.customer_user.id)
-        self.assertEqual(review_data['rating'], '5.0')
+        self.assertEqual(review_data['rating'], 5)
         self.assertEqual(review_data['description'], "Excellent service!")    
         
     def test_get_reviews_unauthenticated(self):

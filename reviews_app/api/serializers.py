@@ -11,6 +11,7 @@ class ReviewsListSerializer(serializers.ModelSerializer):
     
     business_user = serializers.SerializerMethodField()
     reviewer = serializers.IntegerField(source='reviewer.user.id', read_only=True)
+    rating = serializers.IntegerField(min_value=1, max_value=5)
     
     class Meta:
         model = Reviews

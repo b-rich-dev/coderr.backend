@@ -42,8 +42,8 @@ class BaseInfoTests(APITestCase):
         )
         
         Reviews.objects.create(business=self.business_profile1, reviewer=self.customer_profile1, rating=5, description="Excellent!")
-        Reviews.objects.create(business=self.business_profile2, reviewer=self.customer_profile1, rating=4, description="Good!")
-        Reviews.objects.create(business=self.business_profile3, reviewer=self.customer_profile2, rating=4.5, description="Very good!")
+        Reviews.objects.create(business=self.business_profile2, reviewer=self.customer_profile1, rating=5, description="Good!")
+        Reviews.objects.create(business=self.business_profile3, reviewer=self.customer_profile2, rating=3, description="Very good!")
     
     def test_get_base_info(self):
         """Tests retrieving base info statistics with existing data."""
@@ -58,7 +58,7 @@ class BaseInfoTests(APITestCase):
         self.assertIn('offer_count', response.data)
         
         self.assertEqual(response.data['review_count'], 3)
-        self.assertEqual(response.data['average_rating'], 4.5)  # (5 + 4 + 4.5) / 3 = 4.5
+        self.assertEqual(response.data['average_rating'], 4.3)  # (5 + 5 + 3) / 3 = 4.33 -> rounded to 4.3
         self.assertEqual(response.data['business_profile_count'], 3)
         self.assertEqual(response.data['offer_count'], 2)
     

@@ -1,10 +1,13 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from reviews_app.models import Reviews
 from profiles_app.models import Profile
 from .serializers import ReviewsListSerializer
 from .permissions import IsCustomerUser, IsReviewerOrReadOnly
+from .filters import ReviewsFilter
 
 
 class ReviewsListCreateView(generics.ListCreateAPIView):
@@ -12,6 +15,10 @@ class ReviewsListCreateView(generics.ListCreateAPIView):
     
     queryset = Reviews.objects.all().order_by('-rating', '-created_at')
     serializer_class = ReviewsListSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = ReviewsFilter
+    ordering_fields = ['updated_at', 'rating']
+    ordering = ['-rating', '-created_at']
     
     def get_permissions(self):
         """Only customer users can create reviews, but any authenticated user can read"""

@@ -57,7 +57,7 @@ class ReviewDetailTests(APITestCase):
         review_data = response.data
         self.assertEqual(review_data['business_user'], self.business_user1.id)
         self.assertEqual(review_data['reviewer'], self.customer_user.id)
-        self.assertEqual(review_data['rating'], '4.0')
+        self.assertEqual(review_data['rating'], 4)
         self.assertEqual(review_data['description'], "Good service!")
         
     def test_update_review_detail(self):
@@ -73,7 +73,7 @@ class ReviewDetailTests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         review_data = response.data
-        self.assertEqual(review_data['rating'], '5.0')
+        self.assertEqual(review_data['rating'], 5)
         self.assertEqual(review_data['description'], "Excellent service!")
         
     def test_update_review_unauthorized(self):
@@ -135,7 +135,7 @@ class ReviewDetailTests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         review_data = response.data
-        self.assertEqual(review_data['rating'], '4.0')
+        self.assertEqual(review_data['rating'], 4)
         self.assertEqual(review_data['description'], "Updated description only")
      
     def test_delete_review_detail(self):

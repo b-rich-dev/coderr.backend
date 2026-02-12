@@ -69,6 +69,15 @@ class OfferDetailViewUpdateSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'image', 'description', 'details']
         read_only_fields = ['id']
     
+    def validate_details(self, value):
+        """Validate that each detail contains offer_type for identification"""
+        
+        if value:
+            for detail in value:
+                if 'offer_type' not in detail:
+                    raise serializers.ValidationError("Each detail must include 'offer_type' to identify which detail to update.")
+        return value
+    
     def update(self, instance, validated_data):
         """Update offer and its associated details"""
         

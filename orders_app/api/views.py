@@ -78,5 +78,5 @@ class CompletedOrderCountView(APIView):
         
         order_count = Orders.objects.filter(business__user__id=business_user_id, status='completed').count()
         
-        return Response({'order_count': order_count}, status=status.HTTP_200_OK)
+        return Response({'completed_order_count': order_count}, status=status.HTTP_200_OK)
     

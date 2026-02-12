@@ -52,6 +52,7 @@ coverage.xml
 # Testing
 .pytest_cache/
 .tox/
+base_info_app/management
 
 # AI
 .github
