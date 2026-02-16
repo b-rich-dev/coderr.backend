@@ -56,3 +56,7 @@ base_info_app/management
 
 # AI
 .github
+
+# Docker
+Dockerfile
+.dockerignore
