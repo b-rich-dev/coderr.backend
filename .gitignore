@@ -17,7 +17,6 @@ db.sqlite3
 
 # Env / Secrets
 .env
-.env.*
 *.secret
 *.token
 

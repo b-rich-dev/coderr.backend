@@ -14,6 +14,8 @@ class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+    lookup_field = 'user_id'
+    lookup_url_kwarg = 'pk'
     
     def get_serializer_class(self):
         if self.request.method in ['PATCH', 'PUT']:
