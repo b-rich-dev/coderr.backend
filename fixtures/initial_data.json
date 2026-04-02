@@ -1,0 +1,690 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "markus_design",
+      "first_name": "Markus",
+      "last_name": "Bauer",
+      "email": "markus@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "sarah_dev",
+      "first_name": "Sarah",
+      "last_name": "Müller",
+      "email": "sarah@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-12T10:30:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "thomas_motion",
+      "first_name": "Thomas",
+      "last_name": "Klein",
+      "email": "thomas@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-15T08:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "anna_kunde",
+      "first_name": "Anna",
+      "last_name": "Schmidt",
+      "email": "anna@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-20T14:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "username": "felix_buyer",
+      "first_name": "Felix",
+      "last_name": "Wagner",
+      "email": "felix@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-22T11:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "username": "laura_client",
+      "first_name": "Laura",
+      "last_name": "Hoffmann",
+      "email": "laura@coderr.de",
+      "password": "!unusable",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "date_joined": "2025-01-25T16:00:00Z"
+    }
+  },
+
+  {
+    "model": "profiles_app.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "type": "business",
+      "file": "profile_pictures/portrait-3353699_1280.jpg",
+      "location": "Berlin",
+      "tel": "+49 30 12345678",
+      "description": "Ich bin freiberuflicher Grafikdesigner mit über 8 Jahren Erfahrung in Logo- und Markengestaltung. Meine Designs sind klar, modern und stets auf die Zielgruppe meiner Kunden abgestimmt.",
+      "working_hours": "Mo–Fr 9–18 Uhr",
+      "created_at": "2025-01-10T09:00:00Z"
+    }
+  },
+  {
+    "model": "profiles_app.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "type": "business",
+      "file": "profile_pictures/woman-1466628_1280.jpg",
+      "location": "Hamburg",
+      "tel": "+49 40 87654321",
+      "description": "Full-Stack-Entwicklerin mit Fokus auf React und Django. Ich baue performante, skalierbare Webanwendungen und lege großen Wert auf sauberen Code und gute UX.",
+      "working_hours": "Mo–Do 10–19 Uhr",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  },
+  {
+    "model": "profiles_app.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "type": "business",
+      "file": "profile_pictures/Facebook_Profilbild.jpg",
+      "location": "München",
+      "tel": "+49 89 11223344",
+      "description": "Motion Designer und Videograf mit Leidenschaft für Storytelling. Ich produziere Imagefilme, Social-Media-Content und Animationen, die Marken zum Leben erwecken.",
+      "working_hours": "Mo–Fr 8–17 Uhr",
+      "created_at": "2025-01-15T08:00:00Z"
+    }
+  },
+  {
+    "model": "profiles_app.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "type": "customer",
+      "file": "profile_pictures/woman.png",
+      "location": "Frankfurt",
+      "tel": "+49 69 99887766",
+      "description": "Inhaberin eines kleinen Mode-Startups, auf der Suche nach kreativen Dienstleistern für Logo, Website und Marketing.",
+      "working_hours": "",
+      "created_at": "2025-01-20T14:00:00Z"
+    }
+  },
+  {
+    "model": "profiles_app.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "type": "customer",
+      "file": "profile_pictures/man.png",
+      "location": "Köln",
+      "tel": "+49 221 55443322",
+      "description": "Selbstständiger Handwerker, der seinen Betrieb digital aufstellen möchte. Benötige professionelles Branding und eine moderne Website.",
+      "working_hours": "",
+      "created_at": "2025-01-22T11:00:00Z"
+    }
+  },
+  {
+    "model": "profiles_app.profile",
+    "pk": 6,
+    "fields": {
+      "user": 6,
+      "type": "customer",
+      "file": "profile_pictures/Facebook_Profilbild.jpg",
+      "location": "Stuttgart",
+      "tel": "+49 711 66778899",
+      "description": "Marketing-Managerin bei einem mittelständischen Unternehmen. Koordiniere externe Dienstleister für Content, Video und Webentwicklung.",
+      "working_hours": "",
+      "created_at": "2025-01-25T16:00:00Z"
+    }
+  },
+
+  {
+    "model": "offers_app.offer",
+    "pk": 1,
+    "fields": {
+      "creator": 1,
+      "title": "Professionelles Logo Design",
+      "image": "offer_images/artificial-intelligence.jpg",
+      "description": "Ich gestalte ein einzigartiges, vektorbasiertes Logo für Ihr Unternehmen – von der ersten Idee bis zur finalen Datei. Inklusive aller gängigen Dateiformate (AI, EPS, SVG, PNG, PDF).",
+      "created_at": "2025-01-11T09:00:00Z",
+      "updated_at": "2025-01-11T09:00:00Z"
+    }
+  },
+  {
+    "model": "offers_app.offer",
+    "pk": 2,
+    "fields": {
+      "creator": 1,
+      "title": "Corporate Brand Identity",
+      "image": "offer_images/notes.jpg",
+      "description": "Komplettes Branding-Paket für Ihr Unternehmen: Logo, Farbpalette, Typografie, Visitenkarte und Brand-Guidelines als PDF. Ideal für Startups und Rebranding-Projekte.",
+      "created_at": "2025-01-13T10:00:00Z",
+      "updated_at": "2025-01-13T10:00:00Z"
+    }
+  },
+  {
+    "model": "offers_app.offer",
+    "pk": 3,
+    "fields": {
+      "creator": 2,
+      "title": "React Webapplikation Entwicklung",
+      "image": "offer_images/laptop.jpg",
+      "description": "Entwicklung moderner, responsiver Webanwendungen mit React (Frontend) und Django REST Framework (Backend). Von der Konzeption bis zum Deployment.",
+      "created_at": "2025-01-14T11:00:00Z",
+      "updated_at": "2025-01-14T11:00:00Z"
+    }
+  },
+  {
+    "model": "offers_app.offer",
+    "pk": 4,
+    "fields": {
+      "creator": 2,
+      "title": "Landing Page Optimierung",
+      "image": "offer_images/digital-marketing.jpg",
+      "description": "Ich erstelle oder optimierte Ihre Landing Page für maximale Conversion. Inkl. Performance-Analyse, SEO-Grundlagen und responsivem Design.",
+      "created_at": "2025-01-16T09:30:00Z",
+      "updated_at": "2025-01-16T09:30:00Z"
+    }
+  },
+  {
+    "model": "offers_app.offer",
+    "pk": 5,
+    "fields": {
+      "creator": 3,
+      "title": "Imagefilm Produktion",
+      "image": "offer_images/big-file.jpg",
+      "description": "Professioneller Imagefilm für Ihr Unternehmen. Von der Konzeption über den Dreh bis zur Postproduktion – inkl. Schnitt, Vertonung und Farbkorrektur.",
+      "created_at": "2025-01-17T08:00:00Z",
+      "updated_at": "2025-01-17T08:00:00Z"
+    }
+  },
+  {
+    "model": "offers_app.offer",
+    "pk": 6,
+    "fields": {
+      "creator": 3,
+      "title": "Social Media Reels & Kurzvideos",
+      "image": "offer_images/Strandbüro.jpg",
+      "description": "Kreative Kurzvideos und Reels für Instagram, TikTok und LinkedIn. Optimiert für maximale Reichweite und Engagement – inkl. Untertitel und Thumbnails.",
+      "created_at": "2025-01-18T10:00:00Z",
+      "updated_at": "2025-01-18T10:00:00Z"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 1,
+    "fields": {
+      "offer": 1,
+      "title": "Basic Logo",
+      "revisions": 2,
+      "delivery_time_in_days": 5,
+      "price": "149.00",
+      "features": ["1 Logo-Konzept", "Vektordatei (SVG)", "PNG-Export", "2 Revisionen"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 2,
+    "fields": {
+      "offer": 1,
+      "title": "Standard Logo",
+      "revisions": 5,
+      "delivery_time_in_days": 7,
+      "price": "299.00",
+      "features": ["3 Logo-Konzepte", "Alle Vektorformate", "Hell & Dunkel Version", "Social-Media-Kit", "5 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 3,
+    "fields": {
+      "offer": 1,
+      "title": "Premium Logo",
+      "revisions": -1,
+      "delivery_time_in_days": 14,
+      "price": "599.00",
+      "features": ["5 Logo-Konzepte", "Alle Dateiformate", "Animiertes Logo", "Favicon", "Brand-Stylesheet", "Unbegrenzte Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 4,
+    "fields": {
+      "offer": 2,
+      "title": "Basic Branding",
+      "revisions": 2,
+      "delivery_time_in_days": 10,
+      "price": "499.00",
+      "features": ["Logo", "Farbpalette", "Primäre Schriftart", "2 Revisionen"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 5,
+    "fields": {
+      "offer": 2,
+      "title": "Standard Branding",
+      "revisions": 4,
+      "delivery_time_in_days": 18,
+      "price": "899.00",
+      "features": ["Logo + Varianten", "Komplette Farbpalette", "Typografie-System", "Visitenkarten-Design", "4 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 6,
+    "fields": {
+      "offer": 2,
+      "title": "Premium Branding",
+      "revisions": -1,
+      "delivery_time_in_days": 30,
+      "price": "1799.00",
+      "features": ["Vollständiges Logo-System", "Brand-Guidelines (PDF)", "Briefpapier & Stempel", "Social-Media-Templates", "Präsentationsvorlage", "Unbegrenzte Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 7,
+    "fields": {
+      "offer": 3,
+      "title": "Basic Web App",
+      "revisions": 2,
+      "delivery_time_in_days": 14,
+      "price": "799.00",
+      "features": ["Bis zu 5 Seiten", "Responsives Design", "Kontaktformular", "Deployment-Setup", "2 Revisionen"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 8,
+    "fields": {
+      "offer": 3,
+      "title": "Standard Web App",
+      "revisions": 4,
+      "delivery_time_in_days": 28,
+      "price": "1999.00",
+      "features": ["Bis zu 15 Seiten", "React + Django REST API", "User-Authentifizierung", "Admin-Dashboard", "CI/CD-Pipeline", "4 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 9,
+    "fields": {
+      "offer": 3,
+      "title": "Premium Web App",
+      "revisions": -1,
+      "delivery_time_in_days": 60,
+      "price": "4999.00",
+      "features": ["Unbegrenzte Seiten", "Full-Stack mit React & Django", "Datenbank-Design", "REST API + Dokumentation", "Docker & Cloud-Deployment", "1 Jahr Support", "Unbegrenzte Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 10,
+    "fields": {
+      "offer": 4,
+      "title": "Basic Landing Page",
+      "revisions": 2,
+      "delivery_time_in_days": 5,
+      "price": "349.00",
+      "features": ["1 Landing Page", "Responsives Design", "CTA-Optimierung", "2 Revisionen"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 11,
+    "fields": {
+      "offer": 4,
+      "title": "Standard Landing Page",
+      "revisions": 3,
+      "delivery_time_in_days": 10,
+      "price": "649.00",
+      "features": ["1 Landing Page + A/B-Variante", "SEO-Grundoptimierung", "Performance-Analyse", "Analytics-Integration", "3 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 12,
+    "fields": {
+      "offer": 4,
+      "title": "Premium Landing Page",
+      "revisions": -1,
+      "delivery_time_in_days": 18,
+      "price": "1299.00",
+      "features": ["Bis zu 3 Landing Pages", "Vollständige SEO-Optimierung", "Heatmap-Integration", "Conversion-Tracking", "Newsletter-Integration", "Unbegrenzte Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 13,
+    "fields": {
+      "offer": 5,
+      "title": "Basic Imagefilm",
+      "revisions": 1,
+      "delivery_time_in_days": 14,
+      "price": "999.00",
+      "features": ["Bis zu 60 Sek. Video", "1 Drehtag", "Schnitt & Farbkorrektur", "Hintergrundmusik lizenzfrei", "1 Revision"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 14,
+    "fields": {
+      "offer": 5,
+      "title": "Standard Imagefilm",
+      "revisions": 2,
+      "delivery_time_in_days": 21,
+      "price": "2499.00",
+      "features": ["Bis zu 3 Min. Video", "2 Drehtage", "Professioneller Schnitt", "Sprechertext & Voice-Over", "Untertitel", "2 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 15,
+    "fields": {
+      "offer": 5,
+      "title": "Premium Imagefilm",
+      "revisions": 3,
+      "delivery_time_in_days": 42,
+      "price": "5999.00",
+      "features": ["Bis zu 10 Min. Film", "3 Drehtage", "Drone-Aufnahmen", "Schauspieler-Casting", "Professioneller Voice-Over", "Kinoqualität 4K", "3 Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 16,
+    "fields": {
+      "offer": 6,
+      "title": "Basic Reel",
+      "revisions": 1,
+      "delivery_time_in_days": 3,
+      "price": "199.00",
+      "features": ["1 Reel bis 30 Sek.", "Schnitt & Musik", "Untertitel", "1 Revision"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 17,
+    "fields": {
+      "offer": 6,
+      "title": "Standard Reel Paket",
+      "revisions": 2,
+      "delivery_time_in_days": 7,
+      "price": "499.00",
+      "features": ["3 Reels bis je 60 Sek.", "Schnitt & Color Grading", "Trendige Effekte", "Plattform-Optimierung (IG, TikTok)", "2 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "offers_app.offerdetail",
+    "pk": 18,
+    "fields": {
+      "offer": 6,
+      "title": "Premium Content Paket",
+      "revisions": 3,
+      "delivery_time_in_days": 14,
+      "price": "999.00",
+      "features": ["10 Reels bis je 90 Sek.", "Professioneller Schnitt", "Custom Animationen", "Thumbnails & Cover", "Hashtag-Strategie", "3 Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+
+  {
+    "model": "orders_app.orders",
+    "pk": 1,
+    "fields": {
+      "offer_detail": 2,
+      "customer": 4,
+      "business": 1,
+      "created_at": "2025-02-01T10:00:00Z",
+      "updated_at": "2025-02-08T15:00:00Z",
+      "status": "completed",
+      "title": "Standard Logo",
+      "revisions": 5,
+      "delivery_time_in_days": 7,
+      "price": "299.00",
+      "features": ["3 Logo-Konzepte", "Alle Vektorformate", "Hell & Dunkel Version", "Social-Media-Kit", "5 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 2,
+    "fields": {
+      "offer_detail": 7,
+      "customer": 4,
+      "business": 2,
+      "created_at": "2025-02-10T09:00:00Z",
+      "updated_at": "2025-02-10T09:00:00Z",
+      "status": "in_progress",
+      "title": "Basic Web App",
+      "revisions": 2,
+      "delivery_time_in_days": 14,
+      "price": "799.00",
+      "features": ["Bis zu 5 Seiten", "Responsives Design", "Kontaktformular", "Deployment-Setup", "2 Revisionen"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 3,
+    "fields": {
+      "offer_detail": 3,
+      "customer": 5,
+      "business": 1,
+      "created_at": "2025-02-03T11:00:00Z",
+      "updated_at": "2025-02-17T09:00:00Z",
+      "status": "completed",
+      "title": "Premium Logo",
+      "revisions": -1,
+      "delivery_time_in_days": 14,
+      "price": "599.00",
+      "features": ["5 Logo-Konzepte", "Alle Dateiformate", "Animiertes Logo", "Favicon", "Brand-Stylesheet", "Unbegrenzte Revisionen"],
+      "offer_type": "premium"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 4,
+    "fields": {
+      "offer_detail": 13,
+      "customer": 5,
+      "business": 3,
+      "created_at": "2025-02-15T14:00:00Z",
+      "updated_at": "2025-02-15T14:00:00Z",
+      "status": "in_progress",
+      "title": "Basic Imagefilm",
+      "revisions": 1,
+      "delivery_time_in_days": 14,
+      "price": "999.00",
+      "features": ["Bis zu 60 Sek. Video", "1 Drehtag", "Schnitt & Farbkorrektur", "Hintergrundmusik lizenzfrei", "1 Revision"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 5,
+    "fields": {
+      "offer_detail": 11,
+      "customer": 6,
+      "business": 2,
+      "created_at": "2025-02-20T10:00:00Z",
+      "updated_at": "2025-03-02T16:00:00Z",
+      "status": "completed",
+      "title": "Standard Landing Page",
+      "revisions": 3,
+      "delivery_time_in_days": 10,
+      "price": "649.00",
+      "features": ["1 Landing Page + A/B-Variante", "SEO-Grundoptimierung", "Performance-Analyse", "Analytics-Integration", "3 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 6,
+    "fields": {
+      "offer_detail": 16,
+      "customer": 6,
+      "business": 3,
+      "created_at": "2025-03-01T08:00:00Z",
+      "updated_at": "2025-03-01T08:00:00Z",
+      "status": "in_progress",
+      "title": "Basic Reel",
+      "revisions": 1,
+      "delivery_time_in_days": 3,
+      "price": "199.00",
+      "features": ["1 Reel bis 30 Sek.", "Schnitt & Musik", "Untertitel", "1 Revision"],
+      "offer_type": "basic"
+    }
+  },
+  {
+    "model": "orders_app.orders",
+    "pk": 7,
+    "fields": {
+      "offer_detail": 5,
+      "customer": 6,
+      "business": 1,
+      "created_at": "2025-03-05T09:00:00Z",
+      "updated_at": "2025-03-05T09:00:00Z",
+      "status": "in_progress",
+      "title": "Standard Branding",
+      "revisions": 4,
+      "delivery_time_in_days": 18,
+      "price": "899.00",
+      "features": ["Logo + Varianten", "Komplette Farbpalette", "Typografie-System", "Visitenkarten-Design", "4 Revisionen"],
+      "offer_type": "standard"
+    }
+  },
+
+  {
+    "model": "reviews_app.reviews",
+    "pk": 1,
+    "fields": {
+      "business": 1,
+      "reviewer": 4,
+      "rating": 5,
+      "description": "Absolut begeistert! Markus hat genau verstanden, was ich mir vorgestellt habe. Das Logo ist modern, einprägsam und wurde pünktlich geliefert. Klare Weiterempfehlung!",
+      "created_at": "2025-02-09T12:00:00Z",
+      "updated_at": "2025-02-09T12:00:00Z"
+    }
+  },
+  {
+    "model": "reviews_app.reviews",
+    "pk": 2,
+    "fields": {
+      "business": 1,
+      "reviewer": 5,
+      "rating": 4,
+      "description": "Sehr professionelle Arbeit. Das Premium-Paket hat alle meine Erwartungen erfüllt. Lediglich die Kommunikation hätte etwas flotter sein können.",
+      "created_at": "2025-02-18T10:00:00Z",
+      "updated_at": "2025-02-18T10:00:00Z"
+    }
+  },
+  {
+    "model": "reviews_app.reviews",
+    "pk": 3,
+    "fields": {
+      "business": 2,
+      "reviewer": 4,
+      "rating": 5,
+      "description": "Sarah ist fantastisch! Sie hat meine Vorstellungen perfekt umgesetzt und war jederzeit erreichbar. Die Website läuft einwandfrei.",
+      "created_at": "2025-03-10T14:00:00Z",
+      "updated_at": "2025-03-10T14:00:00Z"
+    }
+  },
+  {
+    "model": "reviews_app.reviews",
+    "pk": 4,
+    "fields": {
+      "business": 2,
+      "reviewer": 6,
+      "rating": 5,
+      "description": "Top Arbeit! Die Landing Page hat unsere Conversion-Rate deutlich erhöht. Sarah arbeitet sehr strukturiert und liefert pünktlich.",
+      "created_at": "2025-03-04T11:00:00Z",
+      "updated_at": "2025-03-04T11:00:00Z"
+    }
+  },
+  {
+    "model": "reviews_app.reviews",
+    "pk": 5,
+    "fields": {
+      "business": 3,
+      "reviewer": 5,
+      "rating": 4,
+      "description": "Der Imagefilm ist professionell und sieht wirklich hochwertig aus. Thomas hat kreative Ideen eingebracht, die ich selbst nicht bedacht hätte.",
+      "created_at": "2025-03-12T09:00:00Z",
+      "updated_at": "2025-03-12T09:00:00Z"
+    }
+  },
+  {
+    "model": "reviews_app.reviews",
+    "pk": 6,
+    "fields": {
+      "business": 3,
+      "reviewer": 6,
+      "rating": 3,
+      "description": "Die Qualität des Videos ist gut, aber die Lieferzeit wurde zweimal verschoben. Für den Preis hätte ich etwas mehr Pünktlichkeit erwartet.",
+      "created_at": "2025-03-15T15:00:00Z",
+      "updated_at": "2025-03-15T15:00:00Z"
+    }
+  }
+]
