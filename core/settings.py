@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_rq',
     'corsheaders',
     'django_filters',
     'auth_app',
@@ -104,27 +103,6 @@ DATABASES = {
         "HOST": os.environ.get("DB_HOST", default="db"),
         "PORT": os.environ.get("DB_PORT", default=5432)
     }
-}
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("REDIS_LOCATION", default="redis://redis:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "coderr"
-    }
-}
-
-RQ_QUEUES = {
-    'default': {
-        'HOST': os.environ.get("REDIS_HOST", default="redis"),
-        'PORT': os.environ.get("REDIS_PORT", default=6379),
-        'DB': os.environ.get("REDIS_DB", default=0),
-        'DEFAULT_TIMEOUT': 900,
-        'REDIS_CLIENT_KWARGS': {},
-    },
 }
 
 # Password validation

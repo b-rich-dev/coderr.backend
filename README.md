@@ -47,12 +47,14 @@ A comprehensive Django REST API backend for the Coderr platform - a marketplace 
 
 - **Framework:** Django 6.0.1
 - **API:** Django REST Framework 3.16.1
-- **Database:** SQLite (Development)
+- **Database:** PostgreSQL
+- **Server:** Gunicorn (via Docker)
+- **Containerization:** Docker & Docker Compose
 - **Authentication:** Token Authentication (DRF)
 - **Image Processing:** Pillow 12.1.0
 - **CORS:** django-cors-headers 4.9.0
 - **Filtering:** django-filter 25.2
-- **Python Version:** 3.14.1
+- **Python Version:** 3.12 (Alpine)
 
 ## 📁 Project Structure
 
@@ -63,16 +65,14 @@ coderr.backend/
 │   │   ├── serializers.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── tests/
-│   └── models.py
+│   └── tests/
 ├── profiles_app/          # User Profiles (Customer & Business)
 │   ├── api/
 │   │   ├── permissions.py
 │   │   ├── serializers.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── tests/
-│   └── models.py
+│   └── tests/
 ├── offers_app/            # Service Offers & Details
 │   ├── api/
 │   │   ├── filters.py
@@ -80,32 +80,30 @@ coderr.backend/
 │   │   ├── serializers.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── tests/
-│   └── models.py
+│   └── tests/
 ├── orders_app/            # Order Management
 │   ├── api/
 │   │   ├── permissions.py
 │   │   ├── serializers.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── tests/
-│   └── models.py
+│   └── tests/
 ├── reviews_app/           # Rating & Review System
 │   ├── api/
 │   │   ├── serializers.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── tests/
-│   └── models.py
+│   └── tests/
 ├── base_info_app/         # Platform Statistics
-│   ├── api/
-│   └── models.py
+│   └── api/
 ├── core/                  # Django Project Settings
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
 ├── media/                 # User uploaded files
-├── db.sqlite3
+├── backend.Dockerfile
+├── backend.entrypoint.sh
+├── docker-compose.yml
 ├── manage.py
 └── requirements.txt
 ```
@@ -114,9 +112,8 @@ coderr.backend/
 
 ### Prerequisites
 
-- Python 3.14.1
-- pip
-- Virtual Environment (recommended)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
 ### Setup Steps
 
@@ -126,56 +123,66 @@ coderr.backend/
    cd coderr.backend
    ```
 
-2. **Create and activate virtual environment**
+2. **Create a `.env` file** in the project root with the following variables:
+   ```env
+   # Django
+   SECRET_KEY=your-secret-key
+   DEBUG=False
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   CORS_ALLOWED_ORIGINS=http://localhost:5500,http://127.0.0.1:5500
+   CSRF_TRUSTED_ORIGINS=http://localhost:8000
 
-   **Windows:**
-   ```bash
-   python -m venv env
-   env\Scripts\activate
+   # Database
+   DB_NAME=coderr_db
+   DB_USER=coderr_user
+   DB_PASSWORD=supersecretpassword
+   DB_HOST=db
+   DB_PORT=5432
+
+   # Superuser (auto-created on first start)
+   DJANGO_SUPERUSER_USERNAME=admin
+   DJANGO_SUPERUSER_EMAIL=admin@example.com
+   DJANGO_SUPERUSER_PASSWORD=adminpassword
    ```
 
-   **Linux/Mac:**
+3. **Build and start the containers**
    ```bash
-   python3 -m venv env
-   source env/bin/activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run migrations**
-   ```bash
-   python manage.py migrate
-   ```
-
-5. **Create superuser (optional)**
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. **Run development server**
-   ```bash
-   python manage.py runserver
+   docker compose up --build
    ```
 
 The API will be available at `http://127.0.0.1:8000/`
 
-## �️ Admin Panel
+> **Note:** On first startup, the entrypoint automatically runs `migrate`, `collectstatic`, and creates the superuser and demo guest accounts (`andrey` / `kevin`).
+
+### Useful Docker Commands
+
+```bash
+# Start in detached mode
+docker compose up -d
+
+# Stop containers
+docker compose down
+
+# View logs
+docker compose logs -f web
+
+# Run management commands inside the container
+docker compose exec web python manage.py <command>
+
+# Run tests
+docker compose exec web python manage.py test
+```
+
+## 🗝️ Admin Panel
 
 Django Admin is fully configured for managing all platform data.
 
 ### Access Admin Panel
 
-1. **Create a superuser** (if not already done)
-   ```bash
-   python manage.py createsuperuser
-   ```
-   You'll be prompted to enter:
-   - Username
-   - Email address
-   - Password
+1. **Superuser is created automatically** on first container start using the environment variables:
+   - `DJANGO_SUPERUSER_USERNAME`
+   - `DJANGO_SUPERUSER_EMAIL`
+   - `DJANGO_SUPERUSER_PASSWORD`
 
 2. **Access the admin interface**
    ```
@@ -498,18 +505,18 @@ User (Django Auth)
 
 ## 🧪 Testing
 
-Run the test suite:
+Run the test suite inside the running container:
 
 ```bash
 # Run all tests
-python manage.py test
+docker compose exec web python manage.py test
 
 # Run tests for specific app
-python manage.py test auth_app
-python manage.py test profiles_app
-python manage.py test offers_app
-python manage.py test orders_app
-python manage.py test reviews_app
+docker compose exec web python manage.py test auth_app
+docker compose exec web python manage.py test profiles_app
+docker compose exec web python manage.py test offers_app
+docker compose exec web python manage.py test orders_app
+docker compose exec web python manage.py test reviews_app
 ```
 
 ### Test Coverage
@@ -555,16 +562,25 @@ media/
   - Order creation (Customer users only)
   - Owner-only modifications
 
-## 📝 Environment Variables (Production)
+## 📝 Environment Variables
 
-For production deployment, set the following environment variables:
+All configuration is done via the `.env` file. See the [Installation](#installation) section for a full template.
 
-```env
-SECRET_KEY=your-secret-key
-DEBUG=False
-ALLOWED_HOSTS=your-domain.com
-DATABASE_URL=your-database-url
-```
+| Variable | Description | Default |
+|----------|-------------|----------|
+| `SECRET_KEY` | Django secret key | insecure dev key |
+| `DEBUG` | Debug mode | `True` |
+| `ALLOWED_HOSTS` | Comma-separated allowed hosts | `localhost` |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated CORS origins | *(empty)* |
+| `CSRF_TRUSTED_ORIGINS` | Comma-separated CSRF origins | *(empty)* |
+| `DB_NAME` | PostgreSQL database name | `coderr_db` |
+| `DB_USER` | PostgreSQL user | `coderr_user` |
+| `DB_PASSWORD` | PostgreSQL password | — |
+| `DB_HOST` | PostgreSQL host (Docker service name) | `db` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DJANGO_SUPERUSER_USERNAME` | Auto-created superuser name | `admin` |
+| `DJANGO_SUPERUSER_EMAIL` | Auto-created superuser email | `admin@example.com` |
+| `DJANGO_SUPERUSER_PASSWORD` | Auto-created superuser password | `adminpassword` |
 
 ## 👥 User Types
 
