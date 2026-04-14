@@ -3,6 +3,7 @@ services:
   db:
     image: postgres:latest
     container_name: coderr_database
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -16,6 +17,7 @@ services:
       dockerfile: backend.Dockerfile
     env_file: .env
     container_name: coderr_backend
+    restart: unless-stopped
 
     volumes:
       - .:/app
