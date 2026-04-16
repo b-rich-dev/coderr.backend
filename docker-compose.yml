@@ -22,23 +22,12 @@ services:
       - .:/app
       - coderr_media:/app/media
       - coderr_static:/app/static
+    ports:
+      - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
     depends_on:
       - db
-
-  nginx:
-    image: nginx:alpine
-    container_name: coderr_nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - coderr_media:/app/media:ro
-      - coderr_static:/app/static:ro
-    depends_on:
-      - web
 
 
 
