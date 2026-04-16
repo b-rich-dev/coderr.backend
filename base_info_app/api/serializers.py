@@ -8,4 +8,3 @@ class BaseInfoSerializer(serializers.Serializer):
     average_rating = serializers.FloatField(read_only=True)
     business_profile_count = serializers.IntegerField(read_only=True)
     offer_count = serializers.IntegerField(read_only=True)
-    test = serializers.CharField(read_only=True)

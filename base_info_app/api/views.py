@@ -31,8 +31,7 @@ class BaseInfoView(APIView):
             'review_count': review_count,
             'average_rating': average_rating,
             'business_profile_count': business_profile_count,
-            'offer_count': offer_count,
-            'test': 'deployment_ok'
+            'offer_count': offer_count
         }
         
         serializer = self.serializer_class(data)
