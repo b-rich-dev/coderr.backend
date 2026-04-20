@@ -15,6 +15,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+import sentry_sdk
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -167,3 +169,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_DSN', ''),
+    )
