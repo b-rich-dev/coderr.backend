@@ -14,6 +14,7 @@ A comprehensive Django REST API backend for the Coderr platform - a marketplace 
 - [Models](#models)
 - [Testing](#testing)
 - [Development Notes](#development-notes)
+- [Error Monitoring](#error-monitoring)
 
 ## ✨ Features
 
@@ -54,6 +55,7 @@ A comprehensive Django REST API backend for the Coderr platform - a marketplace 
 - **Image Processing:** Pillow 12.1.0
 - **CORS:** django-cors-headers 4.9.0
 - **Filtering:** django-filter 25.2
+- **Error Monitoring:** Sentry SDK
 - **Python Version:** 3.12 (Alpine)
 
 ## 📁 Project Structure
@@ -581,6 +583,7 @@ All configuration is done via the `.env` file. See the [Installation](#installat
 | `DJANGO_SUPERUSER_USERNAME` | Auto-created superuser name | `admin` |
 | `DJANGO_SUPERUSER_EMAIL` | Auto-created superuser email | `admin@example.com` |
 | `DJANGO_SUPERUSER_PASSWORD` | Auto-created superuser password | `adminpassword` |
+| `SENTRY_DSN` | Sentry Data Source Name | *(empty, monitoring disabled)* |
 
 ## 👥 User Types
 
@@ -588,6 +591,23 @@ All configuration is done via the `.env` file. See the [Installation](#installat
 |------|--------------|
 | **Customer** | Browse offers, place orders, write reviews |
 | **Business** | Create offers, receive orders, get reviewed |
+
+## 🔍 Error Monitoring
+
+This project uses [Sentry](https://sentry.io) for error tracking in production.
+
+- Sentry is active as long as `SENTRY_DSN` is set, regardless of `DEBUG`
+- Without a DSN, the application runs normally without any monitoring
+
+```env
+SENTRY_DSN=https://<key>@<org>.ingest.de.sentry.io/<project>
+```
+
+To test that Sentry is working correctly, call the debug endpoint (remove after verification):
+
+```
+GET /sentry-debug/
+```
 
 ## 🤝 Contributing
 
