@@ -29,7 +29,7 @@ class ProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         
-        response_serializer = ProfileSerializer(instance)
+        response_serializer = ProfileSerializer(instance, context={'request': request})
         return Response(response_serializer.data) 
     
     
